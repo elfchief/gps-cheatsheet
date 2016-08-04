@@ -1,0 +1,526 @@
+%!TEX program = pdflatex
+
+\documentclass[
+    % mediumvopaper,        % Paper size 5.75x9in
+    % msmallroyalvopaper,   % 6.139x9.21in (234x156mm)
+    % ebook,              % alternate to previous, 6x9in
+    letterpaper,
+    11pt,               % consider 12pt, especially for ebook
+    extrafontsizes,
+    oneside,            % "oneside" for ebooks, "twoside" for print
+    onecolumn,
+    openany,            % start chapters on either right or left page
+                        % alternatives are openany, openright and openleft
+    final,              % Mark overfull lines, etc. alternative is "final"
+    %showtrims,          % crop marks
+]{memoir}
+% \documentclass[12pt]{article}
+\usepackage{amssymb,amsmath,latexsym,mathtools}
+\usepackage{tabu,longtable}
+\usepackage{hyperref}
+
+% Page length commands go here in the preamble
+\setlength{\oddsidemargin}{-0.25in} % Left margin of 1 in + 0 in = 1 in
+\setlength{\textwidth}{7in}   % Right margin of 8.5 in - 1 in - 6.5 in = 1 in
+\setlength{\topmargin}{-.75in}  % Top margin of 2 in -0.75 in = 1 in
+\setlength{\textheight}{9.2in}  % Lower margin of 11 in - 9 in - 1 in = 1 in
+
+\tabulinesep =0.3em
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+\DeclarePairedDelimiter\norm{\lvert}{\rvert}%
+
+% Swap them so that brackets are always resized
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}
+\let\oldnorm\norm
+\def\norm{\@ifstar{\oldnorm}{\oldnorm*}}
+\makeatother
+
+%\settypeblocksize{9.5in}{7.5in}{*}
+%\setlrmargins{0.5in}{*}{*}
+%\setulmargins{0.5in}{*}{*}
+%\setheadfoot{14.5pt}{30pt}  % headheight, footskip
+%\setlrmarginsandblock{0.75in}{0.75in}{*}
+
+\newtheorem{theorem}{Equation}
+\newtheorem{definition}{Definition}
+
+%\renewcommand{\baselinestretch}{1.5} % 1.5 denotes double spacing. Changing it will change the spacing
+
+\setlength{\parindent}{0in} 
+% \setlength{\parskip}{\baselineskip}
+
+\begin{document}
+\title{GPS Terms and Equations}
+\author{J. Grizzard}
+% \date{\today}
+% \maketitle
+% \abstract{This a sample \LaTeX document that explains some of the \LaTeX commands}
+%%%\begin{longtabu} {l c c c l p{3in}}
+
+\section{Terms}
+% time stuff
+\begin{longtabu} to\linewidth{X[1.8] X[0.5] X X X X[4]}
+\multicolumn{6}{c}{\textbf{Clock and Health Parameters}} \\
+term & bits & scale fctr & eff. range & units & explanation \\
+\hline
+WN & 10 & 1 & ~ & weeks & GPS week modulo 1024 \\
+URA & 4 & ~ & ~ & ~ & User Range Accuracy \\
+SH & 6 & 1 & ~ & ~ & Satellite health \\
+$T_{GD}$ & 8 & $2^{-31}$ & - & - & Estimated group delay differential \\
+IODC & 10 & - & - & - & Issue of Data, Clock\footnote{Guaranteed unique in any 7-day period} \\
+$t_{oc}$ & 16 & $2^{4}$ & 604,784 & seconds & Clock data reference time \\
+$a_{f2}$ & 8 & $2^{-55}$ & - & sec/sec\textsuperscript{2} & - \\
+$a_{f1}$ & 16 & $2^{-43}$ & - & sec/sec & - \\
+$a_{f0}$ & 22 & $2^{-31}$ & - & seconds & - \\
+\end{longtabu}
+
+
+% Ephemeris definitions
+\begin{longtabu} to\linewidth{X[1.8] X[0.5] X X X X[4]}
+\multicolumn{6}{c}{\textbf{Ephemeris Parameters}} \\
+term & bits & scale fctr & eff. range & units & explanation \\
+\hline
+$M_{0}$ & 32 & $2^{-31}$ & - & \footnotesize{semi-circles} & Mean anomaly at reference time \\
+$\Delta n$ & 16 & $2^{-43}$ & - & \footnotesize{semi-circles/sec} & Mean motion difference from computed value \\
+$e$ & 32 & $2^{-33}$ & 0.03 & d.less & Eccentricity \\
+$\sqrt{A}$ & 32 & $2^{-19}$ & - & $\sqrt{\text{meters}}$ & Square root of the semi major axis \\
+$\Omega_{0}$ & 32 & $2^{-31}$ & - & \footnotesize{semi-circles} & Longitude of ascending node of orbit plane at weekly epoch \\
+$i_{0}$ & 32 & $2^{-31}$ & - & \footnotesize{semi-circles} & Inclination angle at reference time \\
+$\omega$ & 32 & $2^{-31}$ & - & \footnotesize{semi-circles} & Argument of perigee \\
+$\dot\Omega$ & 24 & $2^{-43}$ & - & \footnotesize{semi-cirlces/sec} & Rate of right ascension \\   % FIXME: Is there a proper greek character for this?
+IDOT & 14 & $2^{-43}$ & - & \footnotesize{semi-circles/sec} & Rate of inclination angle \\
+$C_{uc}$ & 16 & $2^{-29}$ & - & radians & Amplitude of the cosine harmonic correction term to the argument of latitude \\
+$C_{us}$ & 16 & $2^{-29}$ & - & radians & Amplitude of the sine harmonic correction term to the argument of latitude \\
+$C_{rc}$ & 16 & $2^{-5}$ & - & meters & Amplitude of the cosine harmonic correction term to the orbit radius \\
+$C_{rs}$ & 16 & $2^{-5}$ & - & meters & Amplitude of the sine harmonic correction term to the orbital radius \\
+$C_{ic}$ & 16 & $2^{-29}$ & - & radians & Amplitude of the cosine harmonic correction term to the angle of inclination \\
+$C_{is}$ & 16 & $2^{-29}$ & - & radians & Amplitude of the sine harmonic correction term to the angle of inclination \\
+$t_{oe}$ & 16 & $2^{4}$ & 604,784 & seconds & Reference time ephemeris \\
+IODE & 8 & - & - & - & Issue of Data (Ephemeris) \\
+\end{longtabu}
+
+% Almanac
+\section{Almanac}
+Block II and IIA SVs transmit three sets of almanac data spanning at least 60 days. Sets 1 and 2 will transmit for up to six days each, set 3 will be transmitted for the remainder of the 60 day minimum.
+\linebreak\linebreak
+Block IIR/IIR-M, IIF, and Block III SVs transmit five sets of almanac data spanning at least 60 days. Sets 1, 2, and 3 will transmit for up to six days each; sets 4 and 5 will be transmitted for up to 32 days; the 5th set will be transmitted for the remainder of the 60 day minimum.
+
+\begin{longtabu} to\linewidth{X[1.8] X[0.5] X X X X[4]}
+\multicolumn{6}{c}{\textbf{Almanac Parameters}} \\
+term & bits & scale fctr & eff. range & units & explanation \\
+\hline
+$e$ & 16 & $2^{-21}$ & - & d.less & Eccentricity \\
+$t_{oa}$ & 8 & $2^{12}$ & 602,112 & seconds & Reference time almanac \\  % FIXME: Footnote/explanation
+$\delta i$ & 16 & $2^{-19}$ & - & \footnotesize{semi-circles} & correction to inclination (relative to $i_{0}$ = 0.30 semi-circles) \\  % FIXME: but what is description?
+$\dot{\Omega}$ & 16 & $2^{-38}$ & - & \footnotesize{semi-cirlces/sec} & Rate of right ascension \\   % FIXME: Is there a proper greek character for this?
+$\sqrt{A}$ & 16 & $2^{-11}$ & - & $\sqrt{\text{meters}}$ & Square root of the semi major axis \\
+$\Omega_{0}$ & 24 & $2^{-23}$ & - & \footnotesize{semi-circles} & Longitude of ascending node of orbit plane at weekly epoch \\
+$\omega$ & 24 & $2^{-23}$ & - & \footnotesize{semi-circles} & Argument of perigee \\
+$M_{0}$ & 24 & $2^{-23}$ & - & \footnotesize{semi-circles} & Mean anomaly at reference time \\
+$a_{f0}$ & 11 & $2^{-20}$ & - & seconds & - \\
+$a_{f1}$ & 11 & $2^{-38}$ & - & sec/sec & - \\
+$\text{WN}_{a}$ & 8 & - & - & weeks & Week number to which $t_{oa}$ is referenced (mod 256) \\ % FIXME: Footnote/explanation
+\end{longtabu}
+
+% UTC
+% FIXME: Footnotes
+\begin{longtabu} to\linewidth{X[1.8] X[0.5] X X X X[4]}
+\multicolumn{6}{c}{\textbf{UTC Parameters}} \\
+term & bits & scale fctr & eff. range & units & explanation \\
+\hline
+$\text{A}_{0}$ & 32 & $2^{-30}$ & - & seconds & - \\ 
+$\text{A}_{1}$ & 24 & $2^{-50}$ & - & sec/sec & - \\
+$\Delta \text{t}_{LS}$ & 8 & 1 & - & seconds & Current delta time \\
+$\text{t}_{ot}$ & 8 & $2^{12}$ & 602,112 & seconds & - \\
+$\text{WN}_{t}$ & 8 & 1 & - & weeks & Current week number (??) \\   % FIXME: Might be wrong
+$\text{WN}_{LSF}$ & 8 & 1 & - & weeks & Week number leap seconds becomes effective \\
+DN & 8 & 1 & 7 & days & Day number leap seconds becomes effective \\
+$\Delta \text{t}_{LSF}$ & 8 & 1 & - & seconds & Delta time due to leap seconds (soon or recent) \\
+\end{longtabu}
+
+
+% Ionospheric
+\begin{longtabu} to\linewidth{X[1.8] X[0.5] X X X X[4]}
+\multicolumn{6}{c}{\textbf{Ionospheric Parameters}} \\
+term & bits & scale fctr & eff. range & units & explanation \\
+\hline
+$\alpha_{0}$ & 8 & $2^{-30}$ & ~ & seconds & - \\  % FIXME: Footnotes
+$\alpha_{1}$ & 8 & $2^{-27}$ & ~ & \footnotesize{sec/semi-circle} & - \\
+$\alpha_{2}$ & 8 & $2^{-24}$ & ~ & \footnotesize{sec/semi-circles\textsuperscript{2}} & - \\
+$\alpha_{3}$ & 8 & $2^{-24}$ & ~ & \footnotesize{sec/semi-circles\textsuperscript{3}} & - \\
+$\beta_{0}$ & 8 & $2^{11}$ & ~ & seconds & - \\  % FIXME: Footnotes
+$\beta_{1}$ & 8 & $2^{14}$ & ~ & \footnotesize{sec/semi-circle} & - \\
+$\beta_{2}$ & 8 & $2^{16}$ & ~ & \footnotesize{sec/semi-circles\textsuperscript{2}} & - \\
+$\beta_{3}$ & 8 & $2^{16}$ & ~ & \footnotesize{sec/semi-circles\textsuperscript{3}} & - \\
+\end{longtabu}
+
+% Constants
+\begin{longtabu} to\linewidth{X[0.5] X[2.5] X X[4]}
+\multicolumn{4}{c}{\textbf{Constants}} \\
+term & def & units & explanation \\
+\hline
+$c$ & $2.99792458 \times 10^{8}$ & \footnotesize{meters/sec} & speed of light in vacuum \\
+$\mu$ & $3.986005 \times 10^{14}$ & \footnotesize{meters\textsuperscript{3}/sec\textsuperscript{2}} & Earth's universal gravitational parameter \\
+$\dot{\Omega}_{e}$ & $7.2921151467 \times 10^{-5}$ & \footnotesize{rad/sec} & Earth's rotation rate \\
+$\pi$ & $3.1415926535898$ & ~ & Pi \\
+\end{longtabu}
+
+\section{Equations}
+\textbf{Geometric Range Correction}: When computing geometric range, account for the effects due to earth rotation rate during the time of signal propagation so as to evaluate the path delay in an inertially stable coordinate system. If working in Earth-fixed coordinates, add the following to position estimate (x, y, z):
+\begin{equation*}
+  (-\dot{\Omega}_{e}\text{y}\Delta t, \dot{\Omega}_{e}\text{x}\Delta t, 0)
+\end{equation*}
+
+\textbf{Group Delay Application}: The user who utilizes the L1 frequency will modify the code phase offset with this equation, where $T_{GD}$ is provided to the user as subframe 1 data:
+\begin{equation*}
+  (\Delta t_{SV})_{L1} = \Delta t_{SV} - T_{GD}
+\end{equation*}
+
+\textbf{Satellite Clock Correction}: The polynomial defined in the following allows the user to determine the effective satellite PRN code phase offset referenced to the phase center of the satellite antennas ($\Delta t_{SV}$) with respect to the GPS system time ($t$) at the time of data transmission.
+
+The coefficients transmitted in subframe 1 describe the offset apparent to the control segment two-frequency receivers for the interval of time in which the parameters are transmitted. This estimated correction accounts for the deterministic satellite clock error characteristics of bias, drift, and aging, as well as for the satellite implementation characteristics of group delay bias and mean differential group delay. Since these coefficients do not include corrections for relativistic effects, the user's equipment must determine the requisite relativistic correction. Accordingly, the offset given below includes a term to perform this function.
+
+The user will correct the time received from the satellite with the equation (in seconds):
+\begin{equation*}
+  t = t_{SV} - (\Delta t_{SV})_{L1}
+\end{equation*}
+where
+\begin{longtabu}{r c l}
+$t$ & = & GPS system time (seconds) \\
+$t_{SV}$ & = & effective SV PRN code phase time at message transmission time (seconds) \\
+$(\Delta t_{SV})_{L1}$ & = & SV PRN code phase time offset (seconds) \\
+\end{longtabu}
+
+\textbf{SV PRN code phase offset}: Using $a_{f0}$, $a_{f1}$, $a_{f2}$ from subframe 1:
+\begin{equation*}
+  (\Delta t_{SV})_{L1} = a_{f0} + a_{f1}(t - t_{oc}) + a_{f2}(t - t_{oc})^{2} + \Delta t_{r} - T_{GD}
+\end{equation*}
+
+\textbf{Relativistic correction term}: Using $e$, $A$, and $E_{k}$ from subframes 2 and 3:
+\begin{equation*}
+  \Delta t_{r} = Fe(A)^{\frac{1}{2}} \sin E_{k}
+\end{equation*}
+
+\textbf{Definition of $F$}:
+\begin{equation*}
+  F = \frac{-2(\mu)^{\frac{1}{2}}}{c^{2}} = -4.442807633 (10)^{-10}d~\text{sec/(meter)}^{\frac{1}{2}}
+\end{equation*}
+
+\textbf{Relativistic correction term used by control segment}:
+\begin{equation*}
+  \Delta t_{r} = - \frac{2 \overrightarrow{R} \times \overrightarrow{V}}{c^{2}}
+\end{equation*}
+where
+\begin{longtabu}{r c l}
+$\overrightarrow{R}$ & = & Instantaneous position vector of SV \\
+$\overrightarrow{V}$ & = & Instantaneous velocity vector of SV \\
+\end{longtabu}
+
+\pagebreak
+
+\textbf{Ionospheric Model}: Utilizing parameters from page 18 of subframe 4.
+\begin{equation*}
+  T_{\mathit{iono}} =
+  \begin{dcases}
+%    F \times \left[ 5.0 \times 10^{-9} + (\text{AMP})\left(1 - \frac{x^{2}}{2} + \frac{x^{4}}{24}\right)\right] & \abs{x} < 1.57 \\
+    F \times \left[
+      5.0 \times 10^{-9} + (\text{AMP})\left(
+        1 - \frac{x^{2}}{2} + \frac{x^{4}}{24}
+      \right)
+    \right] & \abs{x} < 1.57 \\
+    F \times (5.0 \times 10^{-9}) & \abs{x} \geq 1.57
+  \end{dcases} (\text{sec})
+\end{equation*}
+
+\begin{equation*}
+  \text{AMP} = 
+  \begin{dcases}
+  \sum\limits_{n=0}^{3} \alpha_{n} \phi^{n}_{m} & \text{AMP} \geq 0 \\
+  0 & \text{AMP} < 0
+  \end{dcases} (\text{sec})
+\end{equation*}
+
+\begin{equation*}
+  x = \frac{2\pi(t - 50400)}{\text{PER}} (\text{radians})
+\end{equation*}
+
+\begin{equation*}
+  \text{PER} = 
+  \begin{dcases}
+  \sum\limits_{n=0}^{3} \beta_{n} \phi^{n}_{m}, & \text{if}~\text{PER} \geq 72,000 \\
+  72,000, & \text{if}~\text{PER} < 72,000 \\
+  \end{dcases} (\text{sec})
+\end{equation*}
+
+\begin{equation*}
+  F = 1.0 + 16.0[0.53 - E]^{3}
+\end{equation*}
+
+\begin{equation*}
+  \alpha_{n}~\text{and}~\beta_{n}~\text{are transmitted data words with} n = 0, 1, 2,~\text{and}~3
+\end{equation*}
+
+\textbf{Other ionospheric equations}:
+\begin{equation*}
+  \phi_{m} = \phi_{i} + 0.064 \cos (\lambda_{i} - 1.617)~(\text{semi-circles})
+\end{equation*}
+
+\begin{equation*}
+  \lambda_{i} = \lambda_{u} + \frac{\psi\sin A}{\cos \phi_{i}}~(\text{semi-circles})
+\end{equation*}
+
+\begin{equation*}
+  \phi_{i} = 
+  \begin{dcases}
+    \phi_{u} + \psi \cos A, & \text{if}~\abs{\phi_{i}} \leq 0.416 \\
+    \phi_{i} = +0.416, & \text{if}~\phi_{i} > 0.416 \\
+    \phi_{i} = -0.416, & \text{if}~\phi_{i} < -0.416 \\
+  \end{dcases} (\text{semi-circles})
+\end{equation*}
+
+\begin{equation*}
+  \psi = \frac{0.00137}{E + 0.11} - 0.022~(\text{semi-circles})
+\end{equation*}
+
+\begin{equation*}
+  t = \begin{dcases}
+    4.32 \times 10^{4} \lambda_{i} + \text{GPS time}~(\text{sec}) \\
+    t - 86400, & \text{if}~t \geq 86400 \\
+    t + 86400, & \text{if}~t < 0 \\
+  \end{dcases}
+\end{equation*}
+
+\textbf{Terms Used in Computation of Ionospheric Delay}:\\
+\begin{tabu} to\linewidth{X X[8]}
+\multicolumn{2}{l}{~~~~Satellite Transmitted:}\\
+$\alpha_{n}$ & Coefficients of cubic equation representing amplitude of vertical delay (4 coefficients = 8 bits each) \\
+$\beta_{n}$ & Coefficients of cubic equation representing period of model (4 coefficients = 8 bits each) \\
+
+\multicolumn{2}{l}{~~~~Receiver Generated:}\\
+$E$ & Elevation angle between the user and satellite (semi-circles) \\
+$A$ & Azimuth angle between the user and satellite, measured clockwise positive from true north (semi-circles) \\
+$\phi_{u}$ & User geodetic latitude in WGS-84 (semi-circles) \\
+$\lambda_{u}$ & User geodetic longitude in WGS-84 (semi-circles) \\
+GPS time & Receiver computed system time\footnote{Referenced to UTC midnight January 5 (morning of January 6), 1980} \\
+
+\multicolumn{2}{l}{~~~~ Computed:}\\
+$x$ & Phase (radians) \\
+$F$ & Obliquity factor (dimensionless) \\
+$t$ & Local time (sec) \\
+$\phi_{m}$ & Geomagnetic latitude of the earth projection of the ionospheric intersection point (mean ionospheric height assumed 350km) (semi-circles) \\
+$\lambda_{i}$ & Geomagnetic longitude of the earth projection of the ionospheric intersection point (semi-circles) \\
+$\phi_{i}$ & Geomagnetic latitude of the earth projection of the ionospheric intersection point (semi-circles) \\ % FIXME: See if there's updated docs, this is a dupe of phi_m right now
+$\psi$ & Earth's central angle between user position and earth projection of ionospheric intersection point
+\end{tabu}
+
+\pagebreak
+
+\textbf{Universal Coordinated Time (UTC)}
+Depending on the relationship of the effectivity date to the user's current GPS time, the following three different UTC/GPS-time relationships exist:
+
+\textbf{a.} When the effectivity time indicated by the $WN_{LSF}$ and the DN values is not in the past (relative to the user's present time), \emph{and} the user's present time does not fall in the timespan which starts at DN + 3/4 and ends at DN + 5/4, the UTC/GPS-time relationship is given by:
+\[
+  t_{UTC} = (t_{E} - \Delta t_{UTC}) \mod{86,400}~(\text{secs})
+\]
+where
+\begin{longtabu}{r c l}
+  $\Delta t_{UTC}$ & = & $\Delta t_{LS} + A_{0} + A_{1} (t_{E} - t_{ot} + 604800 (\text{WN} - \text{WN}_{t}))$ (secs) \\
+  $t_{E}$ & = & GPS time as estimated by the user on the basis of correcting $t_{SV}$ for factors described in 2.5.5.2 as well as for ionospheric and SA (dither) effects; relative to end/start of week\\ % FIXME: wrapping
+  $\Delta t_{LS}$ & = & Delta time due to leap seconds \\
+  $A_{0}$ and $A_{1}$ & = & Constant and first order terms of polynomial \\
+  $t_{ot}$ & = & reference time for UTC data; referenced to start of week number ($\text{WN}_{t}$) in page 18 subframe 4 word 8 \\
+  WN & = & Current week number (derived from subframe 1) \\
+  $\text{WN}_{t}$ & = & UTC reference week number; eight LSBs of full week number\\
+  \\
+  ~ & ~ & WN, $\text{WN}_{t}$, and $\text{WN}_{LSF}$ can all be truncated -- see 2.3.5(b). $\abs{\text{WN} - \text{WN}_{t}} \leq 127$ \\  % FIXME: doublecheck this, some bits are overlaid weird
+\end{longtabu}
+
+\textbf{b.} When the user's current time falls within the timespan of DN + 3/4 to DN + 5/4, proper accommodation of the leap second event with a possible week number transition is provided by the following expression for UTC:
+\[
+  t_{UTC} = W[\text{mod} (86400 + \Delta t_{LSF} - \Delta t_{LS})]~(\text{secs}) % FIXME: Doublecheck. The [ ] here seem weird
+\]  
+where
+\begin{longtabu}{r c l}
+$W$ & = & $t_{E} - \Delta t_{UTC} - 43200)[\text{mod} 86400] + 43200~\text{secs}$ \\ % FIXME: Doubecheck [ ] and mod here 
+$\Delta t_{UTC}$ & = & as above \\
+\end{longtabu}
+
+\textbf{c.} When the effectivity time of the leap second event (per $\text{WN}_{LFS}$ and DN) is in the past relative to the user's current time, handle identical to ``a'' except:
+\begin{longtabu}{r c l}
+  $\Delta t_{UTC}$ & = & $\Delta t_{LSF} + A_{0} + A_{1} (t_{E} - t_{ot} + 604800 (\text{WN} - \text{WN}_{t}))$ (secs) \\
+\end{longtabu}
+
+\textbf{Almanac Data}: Calculate per precise ephemeris. Nominal inclination angle of 0.30 semi-circles implicit, $\delta i$ (correction to inclination) is transmitted. Other parameters not included in almanac are set to 0 for position determination.
+\[
+  t = t_{SV} - \Delta t_{SV}~(\text{accurate to \textasciitilde 2 microseconds})
+\]
+where
+\begin{longtabu}{r c l}
+$t$ & = & GPS system time (secs) \\
+$t_{SV}$ & = & Effective satellite PRN code phase at time of transmission (secs) \\
+$\Delta t_{UTC}$ & = & as above \\
+$\Delta t_{SV}$ & = & $a_{f0} + a_{f1} t_{k}$ (Satellite PRN code phase time offset (secs)) \\
+$t_{k}$ & = & $t - t_{oa}$ (Time from epoch) \\
+\end{longtabu}
+\pagebreak
+
+\begin{longtabu} to\linewidth{X[3] X}
+\multicolumn{2}{c}{\textbf{Elements of Coordinate Systems}} \\
+$A = (\sqrt{A})^{2}$ & Semi-major axis \\
+$n_{0} = \sqrt{\frac{\mu}{A^{3}}}$ & Computed mean motion - rad/sec \\
+$t_{k} = t - t_{oe}$ & Time from ephemeris reference epoch \\ % FIXME: Has major footnote
+$n = n_{0} + \Delta n$ & Corrected mean motion \\
+$M_{k} = E_{k} - e \sin E_{k}$ & Kepler's equation for eccentric anomaly (may be solved by iteration) - radians \\
+$v_{k} = \tan^{-1}
+  \left\{
+    \frac{
+      \sin v_{k}
+    }{
+      \cos v_{k}
+    }
+  \right\}
+  =
+  \tan^{-1}
+  \left\{
+    \frac{
+      \sqrt{1 - e^{2}} \sin E_{k}~/~(1 - e \cos E_{k})
+    }{
+      (\cos E_{k} - e)~/~(1 - e \cos E_{k})
+    }
+  \right\}  
+  $ & True anomaly \\
+$E_{k} = \cos^{-1}
+  \left\{
+    \frac{e + \cos v_{k}}{1 + e \cos v_{k}}
+  \right\}
+  $ & Eccentric anomaly \\
+$\Phi_{k} = v_{k} + \omega$ & Argument of latitude \\
+
+$\begin{drcases}
+\delta u_{k} = C_{us} \sin 2\Phi + C_{uc} \cos 2\Phi_{k} & \text{argument of latitude correction~~~~} \\
+\delta r_{k} = C_{rc} \cos 2\Phi + C_{rs} \sin 2\Phi_{k} & \text{radius correction}\\
+\delta i_{k} = C_{ic} \cos 2\Phi_{k} + C_{is} sin 2\Phi_{k} & \text{inclination correction}
+\end{drcases}$
+ & Second Harmonic Perturbations \\
+
+$u_{k} = \Phi_{k} + \delta u_{k}$ & Corrected argument of latitude \\
+$r_{k} = A(1-e \cos E_{k}) + \delta r_{k}$ & Corrected radius \\
+$i_{k} = i_{0} + \delta i_{k} + (\text{IDOT})t_{k}$ & Corrected inclination \\
+% FIXME: These should be grouped
+
+$\begin{drcases}
+x_{k}' = r_{k} \cos u_{k} & \\
+y_{k}' = r_{k} \sin u_{k} & \\
+\end{drcases}$ & Positions in orbital plane \\
+
+$\Omega_{k} = \Omega_{0} + (\dot\Omega - \dot\Omega_{e})t_{k} - \dot\Omega_{e} t_{oe}$ & Corrected longitude of ascending node \\
+
+% FIXME: What is i_k?
+$\begin{drcases}
+x_{k} = x_{k}' \cos \Omega_{k} - y_{k}' \cos i_{k} \sin \Omega_{k} & \\
+y_{k} = \sin \Omega_{k} + y_{k}' \cos i_{k} \cos \Omega_{k} & \\
+z_{k} = y_{k}' \sin i_{k} & \\
+\end{drcases}$
+& Earth-Centered, Earth-Fixed coordinates \\
+\end{longtabu}
+
+\textbf{User Range Accuracy}:
+\begin{equation*}
+  \text{URA (meters)} = \begin{dcases}
+    2^{(1 + \frac{N}{2})} & \text{if}~N \leq 6 \\
+    2^{(N - 2)} & \text{if}~6 < N < 15 \\
+    \infty & \text{if}~N = 15 \\
+    \\
+    2.8 & \text{if}~N = 1 \\
+    5.7 & \text{if}~N = 3 \\
+    11.3 & \text{if}~N = 5 \\
+  \end{dcases}
+\end{equation*}
+
+\section{Coordinate Systems}
+\textbf{Earth-Centered Earth-Fixed (ECEF)}: Equations from IS-GPS-200H Table 20-IV give SV's antenna phase center in WGS-84 ECEF system defined as:
+\begin{longtabu} to\linewidth{X X[0.5] X[8]}
+Origin & = & Earth's center of mass \\
+Z-Axis & = & Direction of IERS Reference Pole (IRP) (Rotational axis of the WGS-84 ellipsoid) \\
+X-Axis & = & Intersection of IERS Reference Meridian (IRM) and the plane passing through the origin and normal to the Z-axis \\
+Y-Axis & = & Completes a right-handed, Earth-Centered, Earth-Fixed orthogonal coordinate system \\
+\end{longtabu}
+
+\textbf{Earth-Centered, Inertial (ECI)}: In an ECI coordinate system, GPS signals propagate in straight lines at constant speed $c$. A stable ECI coordinate system of convenience may be defined as being coincident with the ECEF coordinate system at a given time $t_{0}$. The $x$, $y$, $z$ coordinates in the ECEF coordinate system at some other time can be transformed to the $x'$, $y'$, $z'$ coordinates in the selected ECI coordinate system of convenience by simple rotation (neglecting polar motion, nutation, and precession, which can be neglected for small values of $(t - t_{0})$):
+
+\begin{longtabu}{r c l}
+$x'$ & = & $x \cos(\theta) - y \sin(\theta)$ \\
+$y'$ & = & $x \sin(\theta) + y \cos(\theta)$ \\
+$z'$ & = & $z$ \\
+\end{longtabu}
+where
+\begin{longtabu}{r c l}
+$\theta$ & = & $\dot{\Omega}_{e} (t - t_{0})$ \\
+\end{longtabu}
+
+\section{Other}
+\textbf{Geometric Range}: The user must account for the geometric range (D) from the satellite to receiver in an ECI coordinate system:
+
+\begin{longtabu}{r c l}
+$D$ & = & $\abs{\overrightarrow{r}(t_{R}) - \overrightarrow{R}(t_{T})}$ \\
+\end{longtabu}
+where
+\begin{longtabu}{r c l}
+$t_{T}$ & = & GPS system time of transmission \\
+$t_{R}$ & = & GPS system time of reception \\
+$\overrightarrow{R}(t_{T})$ & = & position vector of SV in selected ECI coordinate system at time $t_{T}$ \\
+$\overrightarrow{r}(t_{R})$ & = & position vector of receiver in selected ECI coordinate system at time $t_{R}$ \\
+\end{longtabu}
+
+\textbf{NMCT Validity Time}: To use NMCT data (page 13 of subframe 4) examine AODO term provided in subframe 2. If AODO is 27900 seconds (binary 11111), NMCT is invalid. Otherwise, validity time ($t_{\text{nmct}})$ is:
+\begin{longtabu}{r c l}
+OFFSET & = & $t_{oe} \mod{7200}$ \\
+$t_{\text{nmct}}$ & = & $\begin{dcases}
+  t_{oe} - \text{AODO} & \text{if OFFSET} = 0 \\
+  t_{oe} - \text{OFFSET} + 7200 - \text{AODO} & \text{if OFFSET} > 0 \\
+\end{dcases}$
+\end{longtabu}
+
+Calculation of $t_{\text{nmct}}$ must account for beginning and end of week crossovers:
+\begin{longtabu}{r c l}
+$t_{\text{nmct}}$ & = & $\begin{dcases}
+  t_{\text{nmct}} + 604,800 & \text{if}~t - t_{\text{nmct}} > 302,400 \\
+  t_{\text{nmct}} - 604,800 & \text{if}~t - t_{\text{nmct}} < -302,400 \\
+\end{dcases}$ \\
+\end{longtabu}
+
+Different SVs will transmit NMCT with different $t_{\text{nmct}}$; best performance is usually obtained by applying data from the NMCT with the latest (largest) $t_{\text{nmct}}$. If the same largest $t_{\text{nmct}}$ is provided by two or more visible SVs, the NMCT from any SV (with largest $t_{\text{nmct}}$) may be used; The estimated range deviation (ERD) value provided by the selected NMCT for the other SVs with the same $t_{\text{nmct}}$ should be set to zero if those SVs are used in the positioning solution. Do not apply data from multiple NMCTs and do not apply the data from one NMCT to only a subset of SVs.
+
+\textbf{IODE Datasets}: Cutovers to new datasets will occur on hour boundaries except the first dataset of a new upload. Cutover to 4-hour datasets will occur modulo 4 hours relative to start of week. Cutover from 4-hour to 6-hour datasets will occur modulo 12 hours. Cutover from 12-hour to 24-hour datasets will occur modulo 24 hours.
+
+Start of transmission interval for each dataset corresponds to beginning of curve fit interval for dataset.
+
+\begin{longtabu} to\linewidth{X X X X[1.5]}
+\multicolumn{4}{c}{\textbf{IODC Values and Data Set Lengths (Block II/IIA)}} \\
+days spanned & transmission int. (h) & curve fit int. (h) & IODC Range \\
+\hline
+1 & 2 & 4 & (see IS-GPS-200H table 20-XL) \\
+2--14 & 4 & 6 & (see IS-GPS-200H table 20-XL) \\
+15--16 & 6 & 8 & 240--247 \\
+17--20 & 12 & 14 & 248--255, 496 \\
+21--27 & 24 & 26 & 497--503 \\
+28--41 & 48 & 50 & 504--510 \\
+42--59 & 72 & 74 & 511, 752--756 \\
+60--63 & 96 & 98 & 757 \\
+\end{longtabu}
+
+\begin{longtabu} to\linewidth{X X X X[1.5]}
+\multicolumn{4}{c}{\textbf{IODC Values and Data Set Lengths (Block IIR/IIR-M/IIF \& III)}} \\
+days spanned & transmission int. (h) & curve fit int. (h) & IODC Range \\
+\hline
+1 & 2 & 4 & (see IS-GPS-200H table 20-XIL) \\
+2--14 & 4 & 6 & (see IS-GPS-200H table 20-XIL) \\
+15--16 & 6 & 8 & 240--247 \\
+17--20 & 12 & 14 & 248--255, 496 \\
+21--62 & 24 & 26 & 497--503, 1021--1023 \\
+\end{longtabu}
+
+\end{document}
