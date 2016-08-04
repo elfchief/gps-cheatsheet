@@ -1,6 +1,5 @@
 ## Local stuff
 .deps
-*.pdf
 
 ## Github provided ignores for TeX below
 ## Core latex/pdflatex auxiliary files:
