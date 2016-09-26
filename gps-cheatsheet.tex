@@ -91,7 +91,7 @@ $\Omega_{0}$ & 32 & $2^{-31}$ & - & \footnotesize{semi-circles} & Longitude of a
 $i_{0}$ & 32 & $2^{-31}$ & - & \footnotesize{semi-circles} & Inclination angle at reference time \\
 $\omega$ & 32 & $2^{-31}$ & - & \footnotesize{semi-circles} & Argument of perigee \\
 $\dot\Omega$ & 24 & $2^{-43}$ & - & \footnotesize{semi-cirlces/sec} & Rate of right ascension \\   % FIXME: Is there a proper greek character for this?
-IDOT & 14 & $2^{-43}$ & - & \footnotesize{semi-circles/sec} & Rate of inclination angle \\
+$\dot{i}$ & 14 & $2^{-43}$ & - & \footnotesize{semi-circles/sec} & Rate of inclination angle \\
 $C_{uc}$ & 16 & $2^{-29}$ & - & radians & Amplitude of the cosine harmonic correction term to the argument of latitude \\
 $C_{us}$ & 16 & $2^{-29}$ & - & radians & Amplitude of the sine harmonic correction term to the argument of latitude \\
 $C_{rc}$ & 16 & $2^{-5}$ & - & meters & Amplitude of the cosine harmonic correction term to the orbit radius \\
@@ -328,7 +328,7 @@ Depending on the relationship of the effectivity date to the user's current GPS 
 where
 \begin{longtabu}{r c l}
   $\Delta t_{UTC}$ & = & $\Delta t_{LS} + A_{0} + A_{1} (t_{E} - t_{ot} + 604800 (\text{WN} - \text{WN}_{t}))$ (secs) \\
-  $t_{E}$ & = & GPS time as estimated by the user on the basis of correcting $t_{SV}$ for factors described in 2.5.5.2 as well as for ionospheric and SA (dither) effects; relative to end/start of week\\ % FIXME: wrapping
+  $t_{E}$ & = & GPS time as estimated by the user on the basis of correcting $t_{SV}$ for factors described in 2.5.5.2 as well as for ionospheric effects; relative to end/start of week\\ % FIXME: wrapping
   $\Delta t_{LS}$ & = & Delta time due to leap seconds \\
   $A_{0}$ and $A_{1}$ & = & Constant and first order terms of polynomial \\
   $t_{ot}$ & = & reference time for UTC data; referenced to start of week number ($\text{WN}_{t}$) in page 18 subframe 4 word 8 \\
